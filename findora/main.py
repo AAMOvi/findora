@@ -4,7 +4,7 @@ from findora.routers import media_router, page_router
 from findora.api.v1.api_router import api_router
 from findora.core.config import settings
 from findora.routers import media_router, page_router
-
+from starlette.middleware.sessions import SessionMiddleware
 
 def create_app() -> FastAPI:
     app = FastAPI(
@@ -12,7 +12,12 @@ def create_app() -> FastAPI:
         version=settings.app_version,
         debug=settings.debug,
     )
-
+    app.add_middleware(
+        SessionMiddleware,
+        secret_key=settings.secret_key,
+        session_cookie=settings.session_cookie_name,
+        https_only=False,
+    )
     app.mount(
         "/static",
         StaticFiles(directory="findora/static"),
