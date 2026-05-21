@@ -1,5 +1,7 @@
 from typing import Literal
-
+from fastapi import File, UploadFile
+from findora.schemas.item_image_schema import ItemImageUploadResponse
+from findora.services.upload_service import save_item_image
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 
@@ -74,4 +76,32 @@ def get_item_detail_endpoint(
     return {
         "success": True,
         "data": item,
+    }
+@router.post(
+    "/{item_id}/images",
+    response_model=ItemImageUploadResponse,
+    status_code=status.HTTP_201_CREATED,
+)
+async def upload_item_image_endpoint(
+    item_id: int,
+    file: UploadFile = File(...),
+    db: Session = Depends(get_db),
+):
+    item = get_item_by_id(db=db, item_id=item_id)
+
+    if item is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Item not found.",
+        )
+
+    item_image = await save_item_image(
+        db=db,
+        item_id=item_id,
+        file=file,
+    )
+
+    return {
+        "success": True,
+        "data": item_image,
     }

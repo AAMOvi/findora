@@ -1,9 +1,9 @@
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
-
+from findora.routers import media_router, page_router
 from findora.api.v1.api_router import api_router
 from findora.core.config import settings
-from findora.routers import page_router
+from findora.routers import media_router, page_router
 
 
 def create_app() -> FastAPI:
@@ -21,7 +21,7 @@ def create_app() -> FastAPI:
 
     app.include_router(api_router, prefix="/api/v1")
     app.include_router(page_router.router)
-
+    app.include_router(media_router.router)
     return app
 
 
