@@ -4,6 +4,7 @@ from fastapi.exceptions import RequestValidationError
 from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
 from starlette.middleware.sessions import SessionMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from findora.api.v1.api_router import api_router
 from findora.core.config import settings
@@ -35,7 +36,7 @@ app.add_exception_handler(RequestValidationError, validation_exception_handler)
 app.add_exception_handler(RateLimitExceeded, rate_limit_exception_handler)
 
 app.add_exception_handler(500, internal_server_error_handler)
-
+app.mount("/static", StaticFiles(directory="findora/static"), name="static")
 app.include_router(page_router.router)
 app.include_router(api_router, prefix="/api/v1")
 app.include_router(media_router.router)
