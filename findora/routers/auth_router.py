@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from sqlalchemy.orm import Session
-
+from fastapi import Request
+from findora.core.rate_limit import limiter
 from findora.core.dependencies import get_current_user
 from findora.db.database import get_db
 from findora.models.user import User
@@ -42,6 +43,7 @@ def register_user(
 
 
 @router.post("/login", response_model=AuthResponse)
+@limiter.limit("100/minute")
 def login_user(
     request: Request,
     login_data: LoginRequest,
