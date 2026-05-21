@@ -1,16 +1,12 @@
-"""
-Security utilities for authentication and authorization.
+from passlib.context import CryptContext
 
-Initial strategy:
-- Jinja2 web app will use session/cookie-based authentication.
-- Passwords will be hashed using passlib/bcrypt.
-- JWT may be added later if a separate React/Next.js frontend is introduced.
-"""
+
+password_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 def get_password_hash(password: str) -> str:
-    raise NotImplementedError("Password hashing will be implemented in auth module.")
+    return password_context.hash(password)
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
-    raise NotImplementedError("Password verification will be implemented in auth module.")
+    return password_context.verify(plain_password, hashed_password)
