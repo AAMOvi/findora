@@ -2,6 +2,7 @@ from logging.config import fileConfig
 
 from alembic import context
 from sqlalchemy import engine_from_config, pool
+
 import findora.models  # noqa: F401
 from findora.core.config import settings
 from findora.db.base import Base
